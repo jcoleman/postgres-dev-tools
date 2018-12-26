@@ -1,0 +1,8 @@
+" Works best with vimrc entries:
+"   let g:localvimrc_sandbox = 0
+"   let g:localvimrc_whitelist = "/path/to/postgres/tree/.*"
+"
+if g:localvimrc_sourced_once_for_file
+        finish
+endif
+au BufNewFile,BufRead *.[ch] setlocal noexpandtab autoindent cindent tabstop=4 shiftwidth=4 cinoptions="(0,t0"
