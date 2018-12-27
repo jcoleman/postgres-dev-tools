@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PATH=$HOME/postgresql-test/bin:$PATH
+
 pg_ctl status -D $HOME/postgresql-test-data
 if [ $? -eq 0 ]; then
   ./stop.sh
