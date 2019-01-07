@@ -50,6 +50,7 @@ if [ $? -ne 0 ]; then
   ./stop.sh
 fi
 
+# TODO: setup test db?
 
 SOURCE_DIR=$HOME/postgres
 if [ ! -d "$SOURCE_DIR" ]; then
