@@ -16,8 +16,12 @@ if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
   fi
 fi
 
-OPTIONS=c
-LONGOPTS=clean
+OPTIONS="c,r"
+LONGOPTS="clean,re-initdb"
+
+# Default options
+clean=0
+reinitdb=0
 
 # -use ! and PIPESTATUS to get exit code with errexit set
 # -temporarily store output to be able to check for errors
@@ -32,11 +36,14 @@ fi
 # read getopt’s output this way to handle the quoting right:
 eval set -- "$PARSED"
 
-clean=0
 while true; do
   case "$1" in
     -c|--clean)
       clean=1
+      shift
+      ;;
+    -r|--re-initdb)
+      reinitdb=1
       shift
       ;;
     --)
@@ -73,5 +80,8 @@ BUILD_RESULT=$?
 popd
 
 if [ $BUILD_RESULT -eq 0 ]; then
+  if [ $reinitdb -eq 1 ]; then
+    rm -rf $HOME/postgresql-test-data
+  fi
   ./start.sh
 fi
