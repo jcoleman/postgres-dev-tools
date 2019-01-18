@@ -3,10 +3,17 @@
 # saner programming env: these switches turn some bugs into errors
 set -o errexit -o pipefail -o noclobber -o nounset
 
+GETOPT_CMD="$(which getopt)"
 ! getopt --test > /dev/null
 if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
-  echo "`getopt --test` failed in this environment."
-  exit 1
+  ! BREW_GETOPT="$(brew --prefix gnu-getopt)"
+  if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+    # then we don't have brew or user hasn't install gnu-getopt
+    echo "'getopt --test' failed in this environment; if this is macOS please install gnu-getopt with homebrew."
+    exit 1
+  else
+    GETOPT_CMD="$BREW_GETOPT/bin/getopt"
+  fi
 fi
 
 OPTIONS=c
@@ -16,7 +23,7 @@ LONGOPTS=clean
 # -temporarily store output to be able to check for errors
 # -activate quoting/enhanced mode (e.g. by writing out “--options”)
 # -pass arguments only via   -- "$@"   to separate them correctly
-! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+! PARSED=$($GETOPT_CMD --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
 if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
   # e.g. return value is 1
   # then getopt has complained about wrong arguments to stdout
