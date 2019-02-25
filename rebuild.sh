@@ -3,6 +3,8 @@
 # saner programming env: these switches turn some bugs into errors
 set -o errexit -o pipefail -o noclobber -o nounset
 
+SCRIPTPATH="$(cd "$(dirname "$0")" ; pwd -P)"
+
 GETOPT_CMD="$(which getopt)"
 ! getopt --test > /dev/null
 if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
@@ -73,6 +75,7 @@ fi
 
 pushd $SOURCE_DIR
 if [ $clean -eq 1 ]; then
+  "$SCRIPTPATH/configure_build.sh"
   make clean
 fi
 make && make install
