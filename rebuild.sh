@@ -59,21 +59,21 @@ while true; do
   esac
 done
 
-export PATH=$HOME/postgresql-test/bin:$PATH
+export PATH="$HOME/postgresql-test/bin:$PATH"
 
-! pg_ctl status -D $HOME/postgresql-test-data
+! pg_ctl status -D "$HOME/postgresql-test-data"
 if [ $? -ne 0 ]; then
   ./stop.sh
 fi
 
 # TODO: setup test db?
 
-SOURCE_DIR=$HOME/postgres
+SOURCE_DIR="$HOME/postgres"
 if [ ! -d "$SOURCE_DIR" ]; then
-  SOURCE_DIR=$HOME/Source/postgres
+  SOURCE_DIR="$HOME/Source/postgres"
 fi
 
-pushd $SOURCE_DIR
+pushd "$SOURCE_DIR"
 if [ $clean -eq 1 ]; then
   "$SCRIPTPATH/configure_build.sh"
   make clean
@@ -84,7 +84,7 @@ popd
 
 if [ $BUILD_RESULT -eq 0 ]; then
   if [ $reinitdb -eq 1 ]; then
-    rm -rf $HOME/postgresql-test-data
+    rm -rf "$HOME/postgresql-test-data"
   fi
   ./start.sh
 fi
