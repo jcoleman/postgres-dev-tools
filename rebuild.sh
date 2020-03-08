@@ -3,7 +3,7 @@
 # saner programming env: these switches turn some bugs into errors
 set -o errexit -o pipefail -o noclobber -o nounset
 
-SCRIPTPATH="$(cd "$(dirname "$0")" ; pwd -P)"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 GETOPT_CMD="$(which getopt)"
 ! getopt --test > /dev/null
@@ -75,7 +75,7 @@ fi
 
 pushd "$SOURCE_DIR"
 if [ $clean -eq 1 ]; then
-  "$SCRIPTPATH/configure_build.sh"
+  "$DIR/configure_build.sh"
   make clean
 fi
 make && make install
