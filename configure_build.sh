@@ -6,5 +6,9 @@ if [ ! -d "$SOURCE_DIR" ]; then
 fi
 
 pushd "$SOURCE_DIR"
-./configure --prefix=$HOME/postgresql-test --enable-cassert --enable-debug --enable-depend CFLAGS="-ggdb -Og -g3 -fno-omit-frame-pointer -DOPTIMIZER_DEBUG"
+./configure --prefix=$HOME/postgresql-test \
+  --enable-cassert \
+  --enable-debug \
+  --enable-depend \
+  CFLAGS="-ggdb -Og -g3 -fno-omit-frame-pointer -DOPTIMIZER_DEBUG"
 popd
