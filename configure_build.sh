@@ -10,6 +10,6 @@ pushd "$SOURCE_DIR"
   --enable-cassert \
   --enable-debug \
   --enable-depend \
-  --enable-tap-test \
+  --enable-tap-tests \
   CFLAGS="-ggdb -Og -g3 -fno-omit-frame-pointer -DOPTIMIZER_DEBUG"
 popd
