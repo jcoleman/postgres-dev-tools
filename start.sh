@@ -2,7 +2,9 @@
 
 # Choose an unused port on your machine
 export PGPORT=5444
-PG_PATH="$HOME/postgresql-test"
+if [ -z ${PG_PATH+x} ]; then
+  PG_PATH="$HOME/postgresql-test"
+fi
 PATH="$PG_PATH/bin:$PATH"
 
 if [ ! -d "$HOME/postgresql-test-data" ]; then

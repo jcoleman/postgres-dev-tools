@@ -18,12 +18,13 @@ if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
   fi
 fi
 
-OPTIONS="c,r"
-LONGOPTS="clean,re-initdb"
+OPTIONS="c,r,f"
+LONGOPTS="clean,re-initdb,reconfigure"
 
 # Default options
 clean=0
 reinitdb=0
+reconfigure=0
 
 # -use ! and PIPESTATUS to get exit code with errexit set
 # -temporarily store output to be able to check for errors
@@ -46,6 +47,10 @@ while true; do
       ;;
     -r|--re-initdb)
       reinitdb=1
+      shift
+      ;;
+    -f|--reconfigure)
+      reconfigure=1
       shift
       ;;
     --)
@@ -75,8 +80,10 @@ fi
 
 pushd "$SOURCE_DIR"
 if [ $clean -eq 1 ]; then
-  "$DIR/configure_build.sh"
   make clean
+fi
+if [ $reconfigure -eq 1 ]; then
+  "$DIR/configure_build.sh"
 fi
 make && make install
 BUILD_RESULT=$?
