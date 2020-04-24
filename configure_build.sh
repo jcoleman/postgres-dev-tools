@@ -19,7 +19,7 @@ if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
 fi
 
 OPTIONS="b:p:"
-LONGOPTS="build:path:"
+LONGOPTS="build:,path:"
 
 # Default options
 debug=0

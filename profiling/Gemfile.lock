@@ -1,15 +1,20 @@
+GIT
+  remote: https://github.com/evanphx/benchmark-ips
+  revision: 0bb23ea1f5d8f65416629505889f6dfc550fa4a6
+  specs:
+    benchmark-ips (2.7.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
-    benchmark-ips (2.7.2)
     pg (1.2.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  benchmark-ips
+  benchmark-ips!
   pg
 
 BUNDLED WITH
-   2.0.1
+   1.16.1

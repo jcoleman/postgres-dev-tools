@@ -2,6 +2,7 @@
 
 require "benchmark/ips"
 require "pg"
+require "tempfile"
 
 BRANCHES = [
   "master",
@@ -24,39 +25,52 @@ sql = <<~SQL
   WHERE i IN (#{array.join(',')})
 SQL
 
-BRANCHES.each_with_index do |branch, index|
-  pg_path = "$HOME/postgresql-test-#{branch}"
+Tempfile.create do |report_tempfile|
+  report_tempfile.write("[]")
+  report_tempfile.flush
 
-  # Configure install directory per-branch.
-  run_command("#{PG_DEV_TOOLS_PATH}/configure_build.sh --build=performance --path=\"#{pg_path}\"")
+  BRANCHES.each_with_index do |branch, index|
+    source_path = "$HOME/Source/postgres"
+    pg_path = "$HOME/postgresql-test-#{branch}"
 
-  # Build and install.
-  run_command("#{PG_DEV_TOOLS_PATH}/rebuild.sh --clean")
+    run_command("mkdir -p \"#{pg_path}\"")
 
-  # Start Postgres.
-  run_command("PG_PATH=\"#{pg_path}\" #{PG_DEV_TOOLS_PATH}/start.sh")
+    run_command("bash -c 'cd #{source_path} && git checkout #{branch}'")
 
-  # Setup connection.
-  connection = PG.connect(
-    host: "localhost",
-    port: 5444,
-    database: "perf",
-  )
+    # Configure install directory per-branch.
+    # run_command("#{PG_DEV_TOOLS_PATH}/configure_build.sh --build=performance --path=\"#{pg_path}\"")
 
-  # Run tests.
-  Benchmark.ips do |x|
-    x.time = 5
-    x.warmup = 2
+    # Build and install.
+    # run_command("bash -c 'cd #{source_path} && make clean && make && make install'")
+    # run_command("bash -c 'cd #{source_path} && make install'")
 
-    x.report(branch) do
-      conn.exec(sql)
+    # Start Postgres.
+    run_command("PG_PATH=\"#{pg_path}\" #{PG_DEV_TOOLS_PATH}/stop.sh || true")
+    run_command("PG_PATH=\"#{pg_path}\" #{PG_DEV_TOOLS_PATH}/start.sh")
+
+    # Setup connection.
+    connection = PG.connect(
+      host: "localhost",
+      port: 5444,
+      dbname: "postgres",
+    )
+
+    # Run tests.
+    Benchmark.ips do |x|
+      x.time = 5
+      x.warmup = 2
+
+      x.report(branch) do
+        connection.exec(sql)
+      end
+
+      x.save!(report_tempfile.path)
+      if index == BRANCHES.size - 1
+        x.compare!
+      end
     end
 
-    if index == BRANCHES.size - 1
-      x.compare!
-    end
+    # Stop Postgres.
+    run_command("PG_PATH=\"#{pg_path}\" #{PG_DEV_TOOLS_PATH}/stop.sh")
   end
-
-  # Stop Postgres.
-  run_command("PG_PATH=\"#{pg_path}\" #{PG_DEV_TOOLS_PATH}/stop.sh")
 end
