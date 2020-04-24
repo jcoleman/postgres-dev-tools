@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Choose an unused port on your machine
 export PGPORT=5444
 PG_PATH="$HOME/postgresql-test"

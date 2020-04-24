@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Intended to be run from right pane:
 # - Opens psql (with args) in left pane.
