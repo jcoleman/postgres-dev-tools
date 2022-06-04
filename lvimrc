@@ -6,3 +6,4 @@ if g:localvimrc_sourced_once_for_file
         finish
 endif
 au BufNewFile,BufRead *.[ch] setlocal noexpandtab autoindent cindent tabstop=4 shiftwidth=4 softtabstop=0 cinoptions="(0,t0"
+au BufNewFile,BufRead *.p[ml] setlocal noexpandtab autoindent cindent tabstop=2 shiftwidth=2 softtabstop=0 cinoptions="(0,t0"
